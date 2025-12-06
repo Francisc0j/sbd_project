@@ -119,13 +119,13 @@ def generate_comparison_plot(times_list, tpm_list, files, output_filename):
     plt.show()
 
 # Caminhos para os arquivos JSON de exemplo (substitua com os seus arquivos reais)
-# files = [
-#     './results/francisco/testB_my_1Vu_5Wh.json',
-#     './results/francisco/testB_my_2Vu_10Wh.json',
-#     './results/francisco/testB_my_4Vu_20Wh.json',
-#     './results/francisco/testB_my_8Vu_40Wh.json',
-#     './results/francisco/testB_my_10Vu_50Wh.json'
-# ]
+files = [
+     './results/rui/testA_my_1Vu_5Wh.json',
+     './results/rui/testA_my_2Vu_10Wh.json',
+     './results/rui/testA_my_4Vu_20Wh.json',
+     './results/rui/testA_my_8Vu_40Wh.json',
+     './results/rui/testA_my_10Vu_50Wh.json'
+]
 # files = [
 #     './results/francisco/testA_my_1Vu_5Wh.json',
 #     './results/francisco/testA_my_2Vu_10Wh.json',
@@ -136,13 +136,13 @@ def generate_comparison_plot(times_list, tpm_list, files, output_filename):
 
 #TODO: FALTA TROCAR AQUI O TEST_B
 
-files = [
-    './results/francisco/testC_my_1Vu_5Wh.json',
-    './results/francisco/testC_my_2Vu_10Wh.json',
-    './results/francisco/testB_my_4Vu_20Wh.json',
-    './results/francisco/testC_my_8Vu_40Wh.json',
-    './results/francisco/testC_my_10Vu_50Wh.json'
-]
+# files = [
+#     './results/francisco/testC_my_1Vu_5Wh.json',
+#     './results/francisco/testC_my_2Vu_10Wh.json',
+#     './results/francisco/testB_my_4Vu_20Wh.json',
+#     './results/francisco/testC_my_8Vu_40Wh.json',
+#     './results/francisco/testC_my_10Vu_50Wh.json'
+# ]
 
 
 

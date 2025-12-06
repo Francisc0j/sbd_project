@@ -1,16 +1,13 @@
-
 import json
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
 from datetime import datetime
-import os  # Para criar diretórios, se necessário
-import re  # Para usar expressões regulares
 
 # Função para carregar os dados do arquivo JSON
 def load_data(file_path):
     with open(file_path, 'r') as file:
         data = json.load(file)
-    return data['PostgreSQL tpm']  # A chave onde estão os TPMs
+    return data.get('MySQL tpm') or data.get('PostgreSQL tpm')  # A chave onde estão os TPMs
 
 # Função para processar os dados, extraindo tempos e TPMs
 def extract_data(data):
@@ -37,7 +34,7 @@ def convert_to_relative_time_in_minutes(times):
     
     return relative_times
 
-# Função para filtrar os dados até o ponto onde o TPM se torna 0 duas vezes consecutivas ou tempo > 16 minutos
+# Função para filtrar os dados até o ponto onde o TPM se torna 0 duas vezes consecutivas
 def filter_data(times, tpm_values):
     filtered_times = []
     filtered_tpm_values = []
@@ -45,10 +42,6 @@ def filter_data(times, tpm_values):
     zero_count = 0  # Contador para TPM igual a zero consecutivamente
     
     for time, tpm in zip(times, tpm_values):
-        # Se o tempo ultrapassar 16 minutos, interrompe
-        if time > 16:
-            break
-        
         if tpm == 0:
             zero_count += 1
         else:
@@ -63,34 +56,25 @@ def filter_data(times, tpm_values):
     
     return filtered_times, filtered_tpm_values
 
-# Função para gerar o gráfico de comparação e salvar
-def generate_comparison_plot(times_list, tpm_list, files, output_filename):
+# Função para gerar o gráfico de comparação
+def generate_comparison_plot(times1, tpm1, times2, tpm2):
     plt.figure(figsize=(12, 6))
 
-    # Para cada par de arquivos, processa e plota os dados
-    for i in range(len(times_list)):
-        # Convertendo os tempos para tempos relativos (minutos desde o início do teste)
-        times_relative = convert_to_relative_time_in_minutes(times_list[i])
+    # Convertendo os tempos para tempos relativos (minutos desde o início do teste)
+    times1_relative = convert_to_relative_time_in_minutes(times1)
+    times2_relative = convert_to_relative_time_in_minutes(times2)
 
-        # Filtrando os dados para parar quando TPM for 0 duas vezes consecutivas ou tempo > 16 minutos
-        times_filtered, tpm_filtered = filter_data(times_relative, tpm_list[i])
+    # Filtrando os dados para parar quando TPM for 0 duas vezes consecutivas
+    times1_filtered, tpm1_filtered = filter_data(times1_relative, tpm1)
+    times2_filtered, tpm2_filtered = filter_data(times2_relative, tpm2)
 
-        # Extrair número de VUs a partir do nome do arquivo (exemplo: '1Vu', '2Vu', etc.)
-        match = re.search(r'(\d+)Vu', files[i])  # Encontrando o padrão 'XVu'
-        if match:
-            vu = match.group(1)  # Número de VUs (ex: '1', '2', etc.)
-            label = f'{vu}Vu'  # Usando o número de VUs como rótulo
-
-            # Plotando os dados
-            plt.plot(times_filtered, tpm_filtered, label=label, marker='o', linestyle='-', markersize=6)
+    # Plotando os dados dos dois testes
+    plt.plot(times1_filtered, tpm1_filtered, label='MySQL', color='orange', marker='o', linestyle='-', markersize=6)
+    plt.plot(times2_filtered, tpm2_filtered, label='PostgreSQL', color='blue', marker='o', linestyle='-', markersize=6)  # Usando círculos
 
     # Ajustando o número de ticks no eixo X para ser de 1 em 1 minuto
-    min_time = 0  # Começo do tempo (0 minutos)
-    max_time = 16  # Tempo máximo (16 minutos)
-
-    # Definindo os ticks no eixo X de 1 em 1 minuto, limitado a 16 minutos
     plt.gca().xaxis.set_major_locator(MaxNLocator(integer=True, prune='both'))  # Limitar ticks a cada 1 minuto
-    plt.xticks(range(min_time, max_time + 1, 1))  # 1 minuto por tick, até 16 minutos
+    plt.xticks(range(int(min(times1_filtered + times2_filtered)), int(max(times1_filtered + times2_filtered)) + 1, 1))  # 1 minuto por tick
 
     # Títulos e rótulos
     plt.title('Comparação de Performance - TPM vs Tempo', fontsize=14)
@@ -109,37 +93,20 @@ def generate_comparison_plot(times_list, tpm_list, files, output_filename):
     # Adicionando a grade
     plt.grid(True)
 
-    # Criar diretório 'graphs' se não existir
-    if not os.path.exists('graphs'):
-        os.makedirs('graphs')
-
-    # Salvando o gráfico na pasta 'graphs'
-    plt.savefig(f'graphs/{output_filename}.png')
-
     # Exibindo o gráfico
     plt.show()
 
-# Caminhos para os arquivos JSON de exemplo (substitua com os seus arquivos reais)
-files = [
-    './results/francisco/testB_pg_1Vu_5Wh.json',
-    './results/francisco/testB_pg_2Vu_10Wh.json',
-    './results/francisco/testB_pg_4Vu_20Wh.json',
-    './results/francisco/testB_pg_8Vu_40Wh.json',
-    './results/francisco/testB_pg_10Vu_50Wh.json'
-]
+# Caminhos para os arquivos JSON de exemplo
+file1 = './results/francisco/testA_my_10Vu_50Wh.json'  # Substitua pelo caminho do seu primeiro arquivo JSON
+file2 = './results/francisco/testA_pg_10Vu_50Wh.json'  # Substitua pelo caminho do seu segundo arquivo JSON
 
+# Carregar e extrair os dados dos dois arquivos
+data1 = load_data(file1)
+data2 = load_data(file2)
 
+# Extraindo os tempos e TPMs dos dois conjuntos de dados
+times1, tpm1 = extract_data(data1)
+times2, tpm2 = extract_data(data2)
 
-
-# Carregar e extrair os dados dos arquivos
-times_list = []
-tpm_list = []
-
-for file in files:
-    data = load_data(file)
-    times, tpm = extract_data(data)
-    times_list.append(times)
-    tpm_list.append(tpm)
-
-# Gerar e exibir o gráfico de comparação, e salvar na pasta 'graphs'
-generate_comparison_plot(times_list, tpm_list, files, 'testB_pg_comparison')
+# Gerar e exibir o gráfico de comparação
+generate_comparison_plot(times1, tpm1, times2, tpm2)
