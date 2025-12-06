@@ -1,3 +1,4 @@
+
 import json
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
@@ -9,7 +10,7 @@ import re  # Para usar expressões regulares
 def load_data(file_path):
     with open(file_path, 'r') as file:
         data = json.load(file)
-    return data['MySQL tpm']  # A chave onde estão os TPMs
+    return data['PostgreSQL tpm']  # A chave onde estão os TPMs
 
 # Função para processar os dados, extraindo tempos e TPMs
 def extract_data(data):
@@ -119,30 +120,14 @@ def generate_comparison_plot(times_list, tpm_list, files, output_filename):
     plt.show()
 
 # Caminhos para os arquivos JSON de exemplo (substitua com os seus arquivos reais)
-# files = [
-#     './results/francisco/testB_my_1Vu_5Wh.json',
-#     './results/francisco/testB_my_2Vu_10Wh.json',
-#     './results/francisco/testB_my_4Vu_20Wh.json',
-#     './results/francisco/testB_my_8Vu_40Wh.json',
-#     './results/francisco/testB_my_10Vu_50Wh.json'
-# ]
-# files = [
-#     './results/francisco/testA_my_1Vu_5Wh.json',
-#     './results/francisco/testA_my_2Vu_10Wh.json',
-#     './results/francisco/testA_my_4Vu_20Wh.json',
-#     './results/francisco/testA_my_8Vu_40Wh.json',
-#     './results/francisco/testA_my_10Vu_50Wh.json'
-# ]
-
-#TODO: FALTA TROCAR AQUI O TEST_B
-
 files = [
-    './results/francisco/testC_my_1Vu_5Wh.json',
-    './results/francisco/testC_my_2Vu_10Wh.json',
-    './results/francisco/testB_my_4Vu_20Wh.json',
-    './results/francisco/testC_my_8Vu_40Wh.json',
-    './results/francisco/testC_my_10Vu_50Wh.json'
+    './results/francisco/testA_pg_1Vu_5Wh.json',
+    './results/francisco/testA_pg_2Vu_10Wh.json',
+    './results/francisco/testA_pg_4Vu_20Wh.json',
+    './results/francisco/testA_pg_8Vu_40Wh.json',
+    './results/francisco/testA_pg_10Vu_50Wh.json'
 ]
+
 
 
 
@@ -157,4 +142,4 @@ for file in files:
     tpm_list.append(tpm)
 
 # Gerar e exibir o gráfico de comparação, e salvar na pasta 'graphs'
-generate_comparison_plot(times_list, tpm_list, files, 'testC_my_comparison')
+generate_comparison_plot(times_list, tpm_list, files, 'testA_pg_comparison')
