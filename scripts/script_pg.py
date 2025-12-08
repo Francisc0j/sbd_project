@@ -121,11 +121,11 @@ def generate_comparison_plot(times_list, tpm_list, files, output_filename):
 
 # Caminhos para os arquivos JSON de exemplo (substitua com os seus arquivos reais)
 files = [
-    './results/francisco/testB_pg_1Vu_5Wh.json',
-    './results/francisco/testB_pg_2Vu_10Wh.json',
-    './results/francisco/testB_pg_4Vu_20Wh.json',
-    './results/francisco/testB_pg_8Vu_40Wh.json',
-    './results/francisco/testB_pg_10Vu_50Wh.json'
+    './results/rui/testC_pg_1Vu_5Wh.json',
+    './results/rui/testC_pg_2Vu_10Wh.json',
+    './results/rui/testC_pg_4Vu_20Wh.json',
+    './results/rui/testC_pg_8Vu_40Wh.json',
+    './results/rui/testC_pg_10Vu_50Wh.json'
 ]
 
 
@@ -142,4 +142,4 @@ for file in files:
     tpm_list.append(tpm)
 
 # Gerar e exibir o gráfico de comparação, e salvar na pasta 'graphs'
-generate_comparison_plot(times_list, tpm_list, files, 'testB_pg_comparison')
+generate_comparison_plot(times_list, tpm_list, files, 'testC_pg_comparison')
